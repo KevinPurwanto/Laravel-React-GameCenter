@@ -9,8 +9,18 @@ import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'LeaderBoard',
         href: '/dashboard',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Game1',
+        href: '/reactionTime',
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Game2',
+        href: '/flappyBird',
         icon: LayoutGrid,
     },
 ];
