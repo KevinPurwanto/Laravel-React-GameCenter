@@ -37,17 +37,22 @@ export default function ReactionTime() {
             
             setStatus('waiting');
             const csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content;
+            const username = (document.querySelector('meta[name="username"]')as HTMLMetaElement)?.content;
 
             // TODO: kirim skor ke API backend
             fetch('/api/scores', {
+                
                 method: 'POST',
+                
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken,
+                    'X-CSRF-TOKEN': csrfToken,
                     '_token': csrfToken,
                 },
                 body: JSON.stringify({
-                    player_name: 'Kevin', // ini bisa nanti pakai nama dari login
+                    player_name: username, 
                     game: 'reaction_time',
                     score: reaction
                 })

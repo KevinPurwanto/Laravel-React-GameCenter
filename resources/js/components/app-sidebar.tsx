@@ -14,12 +14,12 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Game1',
+        title: 'Reaction Time Test',
         href: '/reactionTime',
         icon: LayoutGrid,
     },
     {
-        title: 'Game2',
+        title: 'Flappy Bird',
         href: '/flappyBird',
         icon: LayoutGrid,
     },
