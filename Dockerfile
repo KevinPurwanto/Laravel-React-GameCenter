@@ -1,37 +1,36 @@
-# Tahap 1: Build React + install PHP dependencies
+# Stage 1: Build frontend assets
 FROM node:20 AS frontend
 WORKDIR /app
+COPY package*.json vite.config.* tsconfig.* postcss.config.js tailwind.config.* ./
+COPY resources ./resources
+RUN npm install && npm run build
 
-# Copy semua file Laravel
-COPY . .
+# Stage 2: PHP + Laravel
+FROM php:8.2-fpm
 
-# Install dependencies Laravel
-RUN corepack enable && npm install && npm run build
-
-# Tahap 2: PHP & Laravel
-FROM php:8.3-fpm AS backend
-
-# Install dependencies PHP
+# Install system dependencies & extensions
 RUN apt-get update && apt-get install -y \
-    git unzip libpq-dev libzip-dev zip \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    libpng-dev libjpeg-dev libfreetype6-dev zip git unzip libpq-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_pgsql gd bcmath
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy semua file dari tahap 1 (sudah berisi Laravel + build React di public/)
-COPY --from=frontend /app ./
+# Copy Laravel app
+COPY . .
 
-# Install dependencies Laravel
+# Copy built frontend from first stage
+COPY --from=frontend /app/public/build ./public/build
+
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permission storage & bootstrap
+# Set permissions for Laravel
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 EXPOSE 8000
 
-# Jalankan Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

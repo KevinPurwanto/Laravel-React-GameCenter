@@ -1,22 +1,18 @@
 services:
   - type: web
     name: laravel-react-gamecenter
-    env: php
+    env: docker
     plan: free
-    buildCommand: |
-      composer install --no-dev --optimize-autoloader
-      php artisan config:cache
-      php artisan route:cache
-      php artisan view:cache
-      npm install && npm run build
-    startCommand: heroku-php-apache2 public/
+    autoDeploy: true
     envVars:
       - key: APP_KEY
         generateValue: true
       - key: APP_ENV
         value: production
-      - key: APP_DEBUG
-        value: false
+      - key: APP_URL
+        value: https://laravel-react-gamecenter.onrender.com
+      - key: ASSET_URL
+        value: https://laravel-react-gamecenter.onrender.com
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
